@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>500 Poems for Lizabetta Frankline</title>
+<style>
+  :root{
+    --paper:#fdfdfb;
+    --ink:#111;
+    --muted:#8a8a86;
+    --accent:#111;
+    --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.14);
+    --aspect-w: 792;
+    --aspect-h: 612;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    height:100%; margin:0;
+    background:#e9e8e4;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color:var(--ink);
+    overscroll-behavior:none;
+  }
+  body{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100vh; padding: 18px 16px 22px;
+  }
+  .stage{
+    position:relative;
+    width: min(92vw, calc((100vh - 150px) * (var(--aspect-w) / var(--aspect-h))));
+    max-width: 900px;
+    aspect-ratio: var(--aspect-w) / var(--aspect-h);
+    perspective: 1800px;
+  }
+  .page{
+    position:absolute; inset:0;
+    background:var(--paper);
+    border-radius:3px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.06);
+    display:flex;
+    overflow:hidden;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+  .page.leaving{ opacity:0; transform: scale(0.985); }
+  .page.entering{ opacity:0; transform: scale(1.01); }
+
+  .cover{
+    flex-direction:column;
+    justify-content:space-between;
+    padding: 7% 8%;
+  }
+  .cover .cover-top{
+    font-family:"Courier New", Courier, monospace;
+    font-weight:700;
+    font-size: clamp(11px, 1.8vw, 17px);
+    line-height:1.55;
+  }
+  .cover .cover-top .book{ font-style:italic; }
+  .cover .cover-bottom{
+    font-family:"Courier New", Courier, monospace;
+    font-weight:700;
+    font-size: clamp(6px, 1.05vw, 11px);
+    white-space: nowrap;
+    width: 100%;
+    color:#222;
+  }
+
+  .content{
+    align-items:center; justify-content:center;
+    text-align:center; padding: 6% 9%;
+  }
+  .content .text{
+    font-family:"Courier New", Courier, monospace;
+    font-weight:700;
+    line-height:1.4;
+    word-break:break-word;
+  }
+
+  .blank{ align-items:center; justify-content:center; }
+  .blank .ghost-num{
+    font-family:"Courier New", Courier, monospace;
+    font-size: 11px;
+    color: rgba(0,0,0,0.05);
+    user-select:none;
+  }
+
+  .zone{ position:absolute; top:0; bottom:0; width:50%; cursor: pointer; z-index:2; }
+  .zone.left{ left:0; }
+  .zone.right{ right:0; }
+
+  .controls{
+    width:100%; max-width:900px;
+    display:flex; align-items:center; justify-content:center;
+    gap: 14px; margin-top:16px; padding: 0 4px;
+    font-size: 13px; color:#333;
+  }
+  button{
+    font: inherit; cursor:pointer; border:none; background:#fff;
+    color:#111; width:34px; height:34px; border-radius:50%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.08);
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+    transition: transform 0.1s ease;
+  }
+  button:active{ transform: scale(0.92); }
+  button:disabled{ opacity:0.35; cursor:default; }
+  button:disabled:active{ transform:none; }
+
+  .pageinfo{
+    display:flex; align-items:center; gap:6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pageinfo input{
+    width:46px; text-align:center; font: inherit;
+    border:1px solid #ccc; border-radius:5px; padding:3px 2px;
+    background:#fff;
+  }
+  .pageinfo span{ color:var(--muted); }
+
+  .hint{
+    margin-top:8px; font-size:11px; color:#a3a29e; text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="zone left" id="zoneLeft" aria-label="Previous page"></div>
+  <div class="zone right" id="zoneRight" aria-label="Next page"></div>
+</div>
+
+<div class="controls">
+  <button id="prevBtn" aria-label="Previous page">&#8249;</button>
+  <div class="pageinfo">
+    <input id="pageInput" type="number" min="1" max="501" value="1">
+    <span>/ 501</span>
+  </div>
+  <button id="nextBtn" aria-label="Next page">&#8250;</button>
+</div>
+
+<script>
+const PAGES = [{"type": "cover", "lines": ["Thom Eichelberger-Young // 500 Poems for Lizabetta Frankline", "January 2023 – May 2026", "This book is dedicated to Barrett, Ry, Yuyi, and, UM...Nat, Jeff, Naoto & Jasper, XOXO"]}, {"type": "content", "text": "COLBY COLLEGE"}, {"type": "content", "text": "WHITNEY TERRELL"}, {"type": "content", "text": "JOHN COMAROFF"}, {"type": "content", "text": "ROBERT WILSON (DIRECTOR)"}, {"type": "content", "text": "SINJIL"}, {"type": "content", "text": "TIDAL (SERVICE)"}, {"type": "content", "text": "TONGO EISEN-MARTIN"}, {"type": "content", "text": "ST. ANDREWS UNIVERSITY"}, {"type": "content", "text": "2024 KANSAS CITY METROPOLITAN AREA RENT STRIKE"}, {"type": "content", "text": "WEIBO"}, {"type": "content", "text": "YALE SERIES OF YOUNGER POETS"}, {"type": "content", "text": "ATROPIA (FICTIONAL COUNTRY)"}, {"type": "content", "text": "TITAN ARUM"}, {"type": "content", "text": "ED DORN"}, {"type": "content", "text": "LIST OF TRON CHARACTERS"}, {"type": "content", "text": "2021 SUDAN COUP D’ETAT"}, {"type": "content", "text": "JEROME POWELL"}, {"type": "content", "text": "CÁRCEL HILL, VALPARAÍSO"}, {"type": "content", "text": "TOM FORD"}, {"type": "content", "text": "TINA DARRAGH"}, {"type": "content", "text": "JAKE LACY"}, {"type": "content", "text": "LIST OF SEX AND THE CITY CHARACTERS"}, {"type": "content", "text": "HEIDEGGEREAN TERMINOLOGY"}, {"type": "content", "text": "EDWARD ALBEE"}, {"type": "content", "text": "SINA SAMAR"}, {"type": "content", "text": "DISAPPEARANCE OF HAROLD HOLT"}, {"type": "content", "text": "ANTISEMITC CONSPIRACY THEORIES"}, {"type": "content", "text": "GROUNDED (OPERA)"}, {"type": "content", "text": "ESWATINI"}, {"type": "content", "text": "STEFÁN KARL STEFÁNSSON"}, {"type": "content", "text": "AND JUST LIKE THAT"}, {"type": "content", "text": "KING GORDY"}, {"type": "content", "text": "AND JUST LIKE THAT"}, {"type": "content", "text": "THE SKIN I LIVE IN"}, {"type": "content", "text": "IAN (NAME LIST)"}, {"type": "content", "text": "DENIS LEARY"}, {"type": "content", "text": "LEWIS WARSH"}, {"type": "content", "text": "SANDPAINTING"}, {"type": "content", "text": "PADRE PIO (FILM)"}, {"type": "content", "text": "SEX AND THE CITY (SEASON 6)"}, {"type": "content", "text": "JONATHAN CULLER"}, {"type": "content", "text": "KIKI EBSEN"}, {"type": "content", "text": "AGAL (ACCESSORY)"}, {"type": "content", "text": "PALESTINIAN KEY"}, {"type": "content", "text": "TEN DAYS (ALBUM)"}, {"type": "content", "text": "JUDITH GOLDMAN"}, {"type": "content", "text": "FRED AGAIN"}, {"type": "content", "text": "LIST OF STAR WARS CHARACTERS"}, {"type": "content", "text": "EPISTEME (DISAMBIGUATION)"}, {"type": "content", "text": "RIVERDALE (AMERICAN TELEVISION SERIES)"}, {"type": "content", "text": "OPERATION MARG BAR SARMACHAR"}, {"type": "content", "text": "SEX AND THE CITY 2"}, {"type": "content", "text": "THEY/THEM (FILM)"}, {"type": "content", "text": "ABBAS AL-MUSAWI"}, {"type": "content", "text": "HASSAN NASRALLAH"}, {"type": "content", "text": "WEAPONS (2025 FILM)"}, {"type": "content", "text": "“THE HAWK OF LEBANON”"}, {"type": "content", "text": "PALESTINIAN MEXICANS"}, {"type": "content", "text": "ARSENAL"}, {"type": "content", "text": "CALCULAS (DENTAL)"}, {"type": "content", "text": "UNIVERSITY AT BUFFALO"}, {"type": "content", "text": "AMADEO MODIGLIANI"}, {"type": "content", "text": "SANAA INTERNATIONAL AIRPORT"}, {"type": "content", "text": "ETHOS"}, {"type": "content", "text": "CONTRIBUTIONS TO PHILOSOPHY"}, {"type": "content", "text": "EVAN MECHAM"}, {"type": "content", "text": "MODES OF PERSUASION"}, {"type": "content", "text": "INVASION OF THE BODY SNATCHERS"}, {"type": "content", "text": "JOHN R. ROSS"}, {"type": "content", "text": "TOMPKINS SQUARE PARK"}, {"type": "content", "text": "BITTER CHRISTMAS (2026 FILM)"}, {"type": "content", "text": "MARTIN SOSTRE"}, {"type": "content", "text": "STACY SZYMASZEK"}, {"type": "content", "text": "FOUR TET"}, {"type": "content", "text": "U AND I: A TRUE STORY"}, {"type": "content", "text": "SERGIO LEONE"}, {"type": "content", "text": "JOHN AND THE HOLE"}, {"type": "content", "text": "BABBLING"}, {"type": "content", "text": "NEVIL MASKELYNE (MAGICIAN)"}, {"type": "content", "text": "SENATE OF RWANDA"}, {"type": "content", "text": "SILENT HILL f"}, {"type": "content", "text": "LIST OF PRIME MINISTERS OF JAPAN"}, {"type": "content", "text": "DYLAN WIGGINS"}, {"type": "content", "text": "REGINA GEORGE"}, {"type": "content", "text": "JUANA MOLINA"}, {"type": "content", "text": "GERALDINE PAGE"}, {"type": "content", "text": "2025 NEPALESE “GEN Z PROTESTS”*"}, {"type": "content", "text": "FABIOLA de MORA y ARAGÓN"}, {"type": "content", "text": "ERIKA FRANTZVE"}, {"type": "content", "text": "Der Ursprung des Kunstwerkes"}, {"type": "content", "text": "JINKX MONSOON"}, {"type": "content", "text": "BIRD"}, {"type": "content", "text": "DISRUPTION (ADOPTION)"}, {"type": "content", "text": "VI KHI NAO"}, {"type": "content", "text": "EDWARD ROCHESTER"}, {"type": "content", "text": "17TH CENTURY IN LITERATURE"}, {"type": "content", "text": "PAUL HOOVER (POET)"}, {"type": "content", "text": "ROBERT REDFORD"}, {"type": "content", "text": "AM I THE DRAMA?"}, {"type": "content", "text": "HEIDEGGER GESAMTAUSGABE"}, {"type": "content", "text": "PALESTINE ACTION"}, {"type": "content", "text": "STEPHEN COLLINS"}, {"type": "content", "text": "THE DECAMERON (FILM)"}, {"type": "content", "text": "KINSHIP"}, {"type": "content", "text": "ZACHARY TAYLOR"}, {"type": "content", "text": "PALESTINE ACTION"}, {"type": "content", "text": "LASALLE (METRO STATION)"}, {"type": "content", "text": "ISRAEL-QATAR RELATIONS"}, {"type": "content", "text": "GOSPEL IN ISLAM"}, {"type": "content", "text": "TEXAS V JOHNSON"}, {"type": "content", "text": "LIST OF LANDMARK COURT CASES"}, {"type": "content", "text": "SOO LOCKS"}, {"type": "content", "text": "A WRITTEN TESTIMONY"}, {"type": "content", "text": "AMERICAN SOCIETY OF MUSLIMS"}, {"type": "content", "text": "FURSAN AL-AQSA: THE KNIGHTS OF THE AL-AQSA MOSQUE"}, {"type": "content", "text": "RUTH GRAHAM"}, {"type": "content", "text": "“FROM THE RIVER TO THE SEA”"}, {"type": "content", "text": "THE RABBIT HUTCH"}, {"type": "content", "text": "GERALDINE ELIZABETH CARMICHAEL"}, {"type": "content", "text": "JEFFREY WHITE"}, {"type": "content", "text": "SERGEI RACHMANINOFF"}, {"type": "content", "text": "ASSATA SHAKUR"}, {"type": "content", "text": "A WRITTEN TESTIMONY"}, {"type": "content", "text": "LAKE ONTARIO ORDNANCE WORKS (LOOW)"}, {"type": "content", "text": "ROBERT EUGENE BRASHERS"}, {"type": "content", "text": "PALESTINIAN JEWS"}, {"type": "content", "text": "IKARIE XB-1"}, {"type": "content", "text": "MAROSA di GIORGIO"}, {"type": "content", "text": "LIVED EXPERIENCE"}, {"type": "content", "text": "THE FOREST OF LOVE"}, {"type": "content", "text": "TERENCE STAMP"}, {"type": "content", "text": "MARY SEACOLE"}, {"type": "content", "text": "“DIET PEPSI” (SONG)"}, {"type": "content", "text": "JOHN SEARLE"}, {"type": "content", "text": "JOHN SEARLE"}, {"type": "content", "text": "STRUCTURALISM"}, {"type": "content", "text": "HIM (2025 FILM)"}, {"type": "content", "text": "RIGHT TO RESISTANCE"}, {"type": "content", "text": "CONDOLENCE CEREMONY"}, {"type": "content", "text": "MOURNING OF MUHARRAM"}, {"type": "content", "text": "THE LIFE OF A SHOWGIRL"}, {"type": "content", "text": "THAWABIT"}, {"type": "content", "text": "TODD FIELD"}, {"type": "content", "text": "GISÈLE PELICOT"}, {"type": "content", "text": "FAREWELL SERMON"}, {"type": "content", "text": "FRIEDRICH-WILHELM VON HERMANN"}, {"type": "content", "text": "FROM PARIS WITH LOVE (2010 FILM)"}, {"type": "content", "text": "BA’ATHIST IRAQ"}, {"type": "content", "text": "KIDS SEE GHOSTS (2018 ALBUM)"}, {"type": "content", "text": "SIPHONOPHORE"}, {"type": "content", "text": "JULIE SUK"}, {"type": "content", "text": "A HOUSE OF DYNAMITE (2025 FILM)"}, {"type": "content", "text": "RAJA SHEHADEH"}, {"type": "content", "text": "POLITICAL VIOLENCE IN THE UNITED STATES"}, {"type": "content", "text": "SCHOOL TIES (1992 FILM)"}, {"type": "content", "text": "LURKER (2025 FILM)"}, {"type": "content", "text": "GURNEY NORMAN"}, {"type": "content", "text": "[THIS POEM NO LONGER AVAILABLE]"}, {"type": "content", "text": "THUJA"}, {"type": "content", "text": "KINGDOM OF HERJAZ AND (THIRD SAUDI STATE)"}, {"type": "content", "text": "WHOPPING COUGH"}, {"type": "content", "text": "EVAN GOLDBERG"}, {"type": "content", "text": "SUPERMARIONATION"}, {"type": "content", "text": "JAMAAT UL-FUQRA"}, {"type": "content", "text": "LAKE BELL"}, {"type": "content", "text": "10,000 GECS"}, {"type": "content", "text": "JANE ROBERTS"}, {"type": "content", "text": "BEARING WITNESS TO THE OCTOBER 7TH MASSACRE (2023 ISRAELI PROPAGANDA FILM)"}, {"type": "content", "text": "HEIMRAD BÄCKER"}, {"type": "content", "text": "PROJECT FOR THE NEW AMERICAN CENTURY (PNAC)"}, {"type": "content", "text": "FRITZ GROBBA"}, {"type": "content", "text": "JANE ROBERTS"}, {"type": "content", "text": "WHITE HOUSE STATE BALLROOM"}, {"type": "content", "text": "PETER GRAVES"}, {"type": "content", "text": "ANDREA RISEBOROUGH"}, {"type": "content", "text": "GILBERT BOUCHET"}, {"type": "content", "text": "HOW TO KILL A DRAGON (WATKINS BOOK)"}, {"type": "content", "text": "ELLIOTT SMITH"}, {"type": "content", "text": "LIST OF HARRY POTTER CAST MEMBERS"}, {"type": "content", "text": "JACKIE FERRARA"}, {"type": "content", "text": "Hliðskjálf"}, {"type": "content", "text": "XXXTENTACION"}, {"type": "content", "text": "PENNY DEBATE IN THE UNITED STATES"}, {"type": "content", "text": "PENNY (UNITED STATES CURRENCY)"}, {"type": "content", "text": "WILL VOIGT"}, {"type": "content", "text": "LIST OF UNITED STATES PRESIDENTIAL ASSASSINATION ATTEMPTS"}, {"type": "content", "text": "AMMIEL ALCALAY"}, {"type": "content", "text": "UNITED ARAB EMIRATES"}, {"type": "content", "text": "METHYL RED"}, {"type": "content", "text": "“ALWAYS BE MY BABY” (CAREY SINGLE)"}, {"type": "content", "text": "EDEN, EDEN, EDEN"}, {"type": "content", "text": "THE SHADOW OF THE WIND"}, {"type": "content", "text": "EUROPEAN DEBT CRISIS"}, {"type": "content", "text": "DIANE WAKOSKI"}, {"type": "content", "text": "HEATHER LAGENKAMP"}, {"type": "content", "text": "A NIGHTMARE ON ELM STREET (1985 FILM)"}, {"type": "content", "text": "ISTIGHFAR"}, {"type": "content", "text": "EXISTENTIALISM"}, {"type": "content", "text": "CHINA"}, {"type": "content", "text": "PAUL BRADLEY (ENGLISH ACTOR)"}, {"type": "content", "text": "SIKKIM"}, {"type": "content", "text": "MIRACLE ME (1988 FILM)"}, {"type": "content", "text": "CATULLUS 16"}, {"type": "content", "text": "DUKE OF CLARENCE"}, {"type": "content", "text": "33 THOMAS STREET"}, {"type": "content", "text": "MARILYN JEAN BUCK"}, {"type": "content", "text": "YOSHIYAHU YOSEF PINTO"}, {"type": "content", "text": "ADA LIMÓN"}, {"type": "content", "text": "THE LANGOLIERS (MINISERIES)"}, {"type": "content", "text": "68TH ANNUAL GRAMMAR AWARDS"}, {"type": "content", "text": "JOHN CLELAND"}, {"type": "content", "text": "ISAAC KAPPY"}, {"type": "content", "text": "WALLY AMOS"}, {"type": "content", "text": "JEAN-MICHEL JARRE"}, {"type": "content", "text": "JOSEPH BATHANTI"}, {"type": "content", "text": "NAOMI FALK"}, {"type": "content", "text": "THE VOYAGE OF THE DAWN TREADER"}, {"type": "content", "text": "FORESHADOWING"}, {"type": "content", "text": "MARTIN SHORT"}, {"type": "content", "text": "JAMES CAMERON (ACTIVIST)"}, {"type": "content", "text": "ARCTIC FROST INVESTIGATION"}, {"type": "content", "text": "LIST OF PEOPLE WHO DISAPPEARED MYSTERIOUSLY POST-2000"}, {"type": "content", "text": "DASHA NEKRASOVA"}, {"type": "content", "text": "THE MOONSTONE (COLLINS NOVEL)"}, {"type": "content", "text": "NEW CRITICISM"}, {"type": "content", "text": "NICK FUENTES"}, {"type": "content", "text": "SHELL (2024 FILM)"}, {"type": "content", "text": "MELBOURNE"}, {"type": "content", "text": "MURDERS OF BLAKE AND MARY-JO HADLEY"}, {"type": "content", "text": "INFOWARS"}, {"type": "content", "text": "BEATA UMBUYEYI MAIRESSE"}, {"type": "content", "text": "BIRDS IN THE TRAP SING MCKNIGHT"}, {"type": "content", "text": "ANNICK KAYITESI-JOZAN"}, {"type": "content", "text": "THE BRADY BUNCH"}, {"type": "content", "text": "CHARTER COMMUNICATIONS"}, {"type": "content", "text": "LI-MENG YAN"}, {"type": "content", "text": "[THIS POEM INTENTIONALLY MADE UNAVAILABLE]"}, {"type": "content", "text": "DENISE BOMBARDIER"}, {"type": "content", "text": "FRIENDSHIP (2024 FILM)"}, {"type": "content", "text": "SPIRAL (2019 FILM)"}, {"type": "content", "text": "STRICHTARN"}, {"type": "content", "text": "FLECKTARN"}, {"type": "content", "text": "UNITED STATES BOMBING OF THE CHINESE EMBASSAY IN BELGRADE"}, {"type": "content", "text": "JOKER: FOLIE À DEUX"}, {"type": "content", "text": "ADRIAN GRENIER"}, {"type": "content", "text": "SOUTH PARK: JOINING THE PANDERVERSE"}, {"type": "content", "text": "HÄGAR THE HORRIBLE"}, {"type": "content", "text": "SHERMAN’S LAGOON"}, {"type": "content", "text": "BABY BLUES"}, {"type": "content", "text": "TINA DARRAGH"}, {"type": "content", "text": "HARRYETTE MULLEN"}, {"type": "content", "text": "MICHELLE YEOH"}, {"type": "content", "text": "THE CHAIR COMPANY"}, {"type": "content", "text": "VIOLENCE AND CONTROVERSIES DURING THE GEORGE FLOYD PROTESTS"}, {"type": "content", "text": "IT ENDS WITH US CONTROVERSIES"}, {"type": "content", "text": "[THIS POEM INTENTIONALLY UNAVAILABLE]"}, {"type": "content", "text": "BARBARA GUEST"}, {"type": "content", "text": "DARKSIDE (RADIO PLAY)"}, {"type": "content", "text": "INGRID NEWKIRK"}, {"type": "content", "text": "TINA DARRAGH"}, {"type": "content", "text": "TAKESHI KITANO"}, {"type": "content", "text": "STEVE CHOEN (“BUSINESSMAN”)"}, {"type": "content", "text": "PONYO"}, {"type": "content", "text": "WILLIAM RUANE"}, {"type": "content", "text": "BLADEE"}, {"type": "content", "text": "DISAPPEARANCE OF ANA WALSHE"}, {"type": "content", "text": "WILL BYERS"}, {"type": "content", "text": "IONIAN SEA"}, {"type": "content", "text": "JAMAICA ACCORDS"}, {"type": "content", "text": "JIM WATKINS (BUSINESSMAN)"}, {"type": "content", "text": "TEX WATSON"}, {"type": "content", "text": "GETTY CONSERVATION INSTITUTE"}, {"type": "content", "text": "ALLEGATIONS OF BARACK OBAMA SPYING ON DONALD TRUMP"}, {"type": "content", "text": "SCAMMONY"}, {"type": "content", "text": "LIST OF MUSIC STUDENTS BY TEACHER"}, {"type": "content", "text": "BUNITA MARCUS"}, {"type": "content", "text": "BIDISHA"}, {"type": "content", "text": "POE"}, {"type": "content", "text": "TIMOTHY HUTTON"}, {"type": "content", "text": "THE SENTIMENTALISTS (NOVEL)"}, {"type": "content", "text": "MARIAH CAREY"}, {"type": "content", "text": "SLAPSTICK (VONNEGUT NOVEL)"}, {"type": "content", "text": "“EVERYBODY” (Y$ SONG)"}, {"type": "content", "text": "ANDREA LAING"}, {"type": "content", "text": "NORWEGIAN BUTTER CRISIS"}, {"type": "content", "text": "AJ+"}, {"type": "content", "text": "“PREACHER MAN” (KANYE WEST SONG)"}, {"type": "content", "text": "DOLLY PARTON"}, {"type": "content", "text": "MEGHAN TRAINOR"}, {"type": "content", "text": "RICHARD EDEN (ACTOR)"}, {"type": "content", "text": "RICHARD EDEN (ALCHEMIST AND TRANSLATOR)"}, {"type": "content", "text": "AVI NESHER"}, {"type": "content", "text": "NOMI ABADI"}, {"type": "content", "text": "PHYSIS"}, {"type": "content", "text": "DAVID WALLIAMS"}, {"type": "content", "text": "PEACH BASKET HAT"}, {"type": "content", "text": "[THIS POEM INTENTIONALLY MADE UNAVAILABLE]"}, {"type": "content", "text": "JANDEK"}, {"type": "content", "text": "ZHUANG ZHOU"}, {"type": "content", "text": "CLARK COOLIDGE"}, {"type": "content", "text": "ESDEEKID"}, {"type": "content", "text": "LEO TOLSTOY"}, {"type": "content", "text": "“BIG GUY” (2025 SONG)"}, {"type": "content", "text": "CINTI"}, {"type": "content", "text": "MIDGE DECTOR"}, {"type": "content", "text": "SHOCK AND AWE"}, {"type": "content", "text": "BOOK OF MICHAH"}, {"type": "content", "text": "ELIVS PRESLEY"}, {"type": "content", "text": "VICTIMS OF NAZI GENOCIDE"}, {"type": "content", "text": "DON JUAN’S RECKLESS DAUGHTER"}, {"type": "content", "text": "HANNAH WEINER"}, {"type": "content", "text": "Y2K (2024 FILM)"}, {"type": "content", "text": "JENNIFER ANNISTON"}, {"type": "content", "text": "MOVIMENTO PEDOPHILE"}, {"type": "content", "text": "TRACEY EMIN"}, {"type": "content", "text": "MARK Z. DANIELEWSKI"}, {"type": "content", "text": "LO MEIN"}, {"type": "content", "text": "HUGO CHAVEZ"}, {"type": "content", "text": "FORGOTTEN REBELS"}, {"type": "content", "text": "SUN YAT-SEN"}, {"type": "content", "text": "MOOR MOTHER"}, {"type": "content", "text": "NELLIE WONG"}, {"type": "content", "text": "HOMAGE TO THE SQUARE"}, {"type": "content", "text": "FLUX GOURMET"}, {"type": "content", "text": "BÉLA TARR"}, {"type": "content", "text": "THE TURIN HORSE"}, {"type": "content", "text": "SIR JOHN SOANE’S MUSEUM"}, {"type": "content", "text": "MUSIC OF CHANGES"}, {"type": "content", "text": "COCO CHANEL"}, {"type": "content", "text": "“BONNIE AND CLYDE” (SERGE GAINSBOURG SONG)"}, {"type": "content", "text": "JOHN ADAMS (COMPOSER)"}, {"type": "content", "text": "DAN BILZERIAN"}, {"type": "content", "text": "JOHN LUTHER ADAMS"}, {"type": "content", "text": "GADJO"}, {"type": "content", "text": "REED-KELLOG SENTENCE DIAGRAM"}, {"type": "content", "text": "KLAUS SCHULZE"}, {"type": "content", "text": "SUPERPOWER (2023 FILM)"}, {"type": "content", "text": "GIANT PANDAS AROUND THE WORLD"}, {"type": "content", "text": "[THIS POEM MADE INTENTIONALLY UNAVAILABLE]"}, {"type": "content", "text": "AUDRE LORDE"}, {"type": "content", "text": "KING ABDULAZIZ INTERNATIONAL AIRPORT"}, {"type": "content", "text": "[THIS POEM MADE INTENTIONALLY UNAVAILABLE]"}, {"type": "content", "text": "HAMSUN (1996 FILM)"}, {"type": "content", "text": "SALVAGE THE BONES"}, {"type": "content", "text": "28 DAYS LATER"}, {"type": "content", "text": "JOHN BARTH"}, {"type": "content", "text": "THE STEEL HARP"}, {"type": "content", "text": "MASJID AL-HARAM"}, {"type": "content", "text": "MICHAEL PARENTI"}, {"type": "content", "text": "JACOB ELORDI"}, {"type": "content", "text": "HELIUM STORAGE AND CONSERVATION"}, {"type": "content", "text": "BOSNIAN GENOCIDE"}, {"type": "content", "text": "PETER MURPHY (MUSICIAN)"}, {"type": "content", "text": "GEORGES BATAILLE"}, {"type": "content", "text": "KIMBERLEY HÉBERT GREGORY"}, {"type": "content", "text": "DR. NO (1962 FILM)"}, {"type": "content", "text": "ORGANON"}, {"type": "content", "text": "[THIS POEM MADE INTENTIONALLY UNAVAILABLE]"}, {"type": "content", "text": "ECKERD PHARMACY"}, {"type": "content", "text": "BILL ZAVATSKY"}, {"type": "content", "text": "WILLIAM RANDOLHP HEARST"}, {"type": "content", "text": "WET FEET, DRY FEET POLICY"}, {"type": "content", "text": "SHIRLEY RAINES (NON-PROFIT FOUNDER)"}, {"type": "content", "text": "JACK O’CONNELL"}, {"type": "content", "text": "GARRY SHANDLING"}, {"type": "content", "text": "CARRIE PRESTON"}, {"type": "content", "text": "RENÉ GIRARD"}, {"type": "content", "text": "LORNE MICHAELS"}, {"type": "content", "text": "SAITAMA"}, {"type": "content", "text": "JOHN CARPENTER"}, {"type": "content", "text": "PATRICIA HEARST"}, {"type": "content", "text": "MINK STOLE"}, {"type": "content", "text": "KOREAN AIR LINES FLIGHT 007"}, {"type": "content", "text": "THE BEAUTY (2026 TV SERIES)"}, {"type": "content", "text": "IF YOU CAN BELIEVE YOUR EYES AND EARS"}, {"type": "content", "text": "LEE THOMPSON YOUNG"}, {"type": "content", "text": "BERTOLT BRECHT"}, {"type": "content", "text": "STOKER (2013 FILM)"}, {"type": "content", "text": "ABIGAIL CHILD"}, {"type": "content", "text": "GREG HIRSCH"}, {"type": "content", "text": "ROARING GAP, NORTH CAROLINA"}, {"type": "content", "text": "LOGAN ROY"}, {"type": "content", "text": "PHIL SPECTOR"}, {"type": "content", "text": "GERTRUDE STEIN"}, {"type": "content", "text": "THE WASHINGTON POST"}, {"type": "content", "text": "VERONZA BOWERS JR."}, {"type": "content", "text": "MEREDITH QUARTERMAIN"}, {"type": "content", "text": "ANNE TARDOS"}, {"type": "content", "text": "PSYCHOGEOGRAPHY"}, {"type": "content", "text": "JOSÉ ARGÜELLES"}, {"type": "content", "text": "STEVE BENSON (POET)"}, {"type": "content", "text": "ANAL HYGEINE"}, {"type": "content", "text": "NO LAND"}, {"type": "content", "text": "LES CHANTS MAGNÉTIQUES"}, {"type": "content", "text": "TOM CLARK (POET)"}, {"type": "content", "text": "YU CHEN (ARTIST)"}, {"type": "content", "text": "SNEEZE"}, {"type": "content", "text": "TOBACCO AND VAPES BILL"}, {"type": "content", "text": "HARVEY QUAYTMAN"}, {"type": "content", "text": "KENT JOHNSON (POET)"}, {"type": "content", "text": "JONATHAN WILLIAMS (POET)"}, {"type": "content", "text": "CHESED"}, {"type": "content", "text": "CHRIS ELLIOTT"}, {"type": "content", "text": "PAUL METCALF"}, {"type": "content", "text": "RAFAH"}, {"type": "content", "text": "YŪREI"}, {"type": "content", "text": "BUFFALO, NEW YORK"}, {"type": "content", "text": "HEATHER MCCOMB"}, {"type": "content", "text": "WUTHERING HEIGHTS"}, {"type": "content", "text": "THE HOUSEMAID (2025 FILM)"}, {"type": "content", "text": "WIM WENDERS"}, {"type": "content", "text": "MICHAEL ANDRE"}, {"type": "content", "text": "RINALDO WALCOTT"}, {"type": "content", "text": "EMILIO VAVARELLA"}, {"type": "content", "text": "EMILIO VAVARELLA"}, {"type": "content", "text": "EMILIO VAVARELLA"}, {"type": "content", "text": "CIMAVAX-EGF"}, {"type": "content", "text": "CHARLIE SHEEN"}, {"type": "content", "text": "AMAMI RABBIT"}, {"type": "content", "text": "AMMIEL ALCALAY"}, {"type": "content", "text": "FANNY HOWE"}, {"type": "content", "text": "CRYPTOCURRENCY WALLET"}, {"type": "content", "text": "WHAT IS PHILOSOPHY? (HEIDEGGER BOOK)"}, {"type": "content", "text": "MICHAEL SILVERBLATT"}, {"type": "content", "text": "THE SUMMER PALACE"}, {"type": "content", "text": "TINA DARRAGH"}, {"type": "content", "text": "“THE HOUSE OF FAME” (CHAUCER POEM)"}, {"type": "content", "text": "PEARL MANUSCRIPT"}, {"type": "content", "text": "MARIE DE FRANCE"}, {"type": "content", "text": "HOPE EMILY ALLEN"}, {"type": "content", "text": "PEARL OF GREAT PRICE"}, {"type": "content", "text": "DAVID EVANS SHAW"}, {"type": "content", "text": "LE MORTE D’ARTHUR"}, {"type": "content", "text": "RANDALL KENAN"}, {"type": "content", "text": "RANDALL KENAN"}, {"type": "content", "text": "SEIN UND ZEIT"}, {"type": "content", "text": "SLOBODAN MILOŠEVIĆ"}, {"type": "content", "text": "JOHN LA TOUCHE"}, {"type": "content", "text": "WALT WHITMAN"}, {"type": "content", "text": "SUBMARINE COMMUNICATIONS CABLE"}, {"type": "content", "text": "GOLIAH (1849 TUGBOAT)"}, {"type": "content", "text": "HUMAN-HUNTING"}, {"type": "content", "text": "SARAJEVO SAFARI"}, {"type": "content", "text": "BOSNIAN GENOCIDE DENIAL"}, {"type": "content", "text": "RICO (DOG)"}, {"type": "content", "text": "ROLAND"}, {"type": "content", "text": "JIM CROCE"}, {"type": "content", "text": "DISAPPEARANCE OF NANCY GUTHRIE"}, {"type": "content", "text": "DYMAXION HOUSE"}, {"type": "content", "text": "LEXI JONES"}, {"type": "content", "text": "MIGRANTS AROUND CALAIS"}, {"type": "content", "text": "KATHY ACKER"}, {"type": "content", "text": "RED-BOXING"}, {"type": "content", "text": "RED-BOXING"}, {"type": "content", "text": "CHRISTINE KELLY (JOURNALIST)"}, {"type": "content", "text": "SHANGHAI PUDONG INTERNATIONAL AIRPORT"}, {"type": "content", "text": "ROBERT COOVER"}, {"type": "content", "text": "WALLACE BERMAN"}, {"type": "content", "text": "JIM CARREY FILMOGRAPHY"}, {"type": "content", "text": "JACKSON HINKLE"}, {"type": "content", "text": "NAOTO"}, {"type": "content", "text": "IRANIAN GREEN MOVEMENT"}, {"type": "content", "text": "LIST OF AMTRAK ROUTES"}, {"type": "content", "text": "THE POWER BROKER"}, {"type": "content", "text": "AFGHANISTAN"}, {"type": "content", "text": "BHUTAN AT THE OLYMPICS"}, {"type": "content", "text": "WNED-TV"}, {"type": "content", "text": "TERESA"}, {"type": "content", "text": "JUDEO-BANDERITE"}, {"type": "content", "text": "SPRINKLES"}, {"type": "content", "text": "SPRINKLES"}, {"type": "content", "text": "THE CROWDED ROOM"}, {"type": "content", "text": "STRING QUARTET NUMBER 19"}, {"type": "content", "text": "UNIVERSITY HEIGHTS DISTRICT, BUFFALO, NEW YORK"}, {"type": "content", "text": "THE CONSOLATION OF PHILOSOPHY"}, {"type": "content", "text": "TINA DARRAGH"}, {"type": "content", "text": "DIALECTIC"}, {"type": "content", "text": "DIALECTIC"}, {"type": "content", "text": "PHENOMENOLOGY OF PERCEPTION"}, {"type": "content", "text": "WILLARD VON ORMAN QUINE"}, {"type": "content", "text": "JAYNE CORTEZ"}, {"type": "content", "text": "SEXUAL SURROGATE"}, {"type": "content", "text": "HELEN HUNT"}, {"type": "content", "text": "DEMOGRAPHICS OF NEW YORK"}, {"type": "content", "text": "SALLY RIDE"}, {"type": "content", "text": "KING OTTO I"}, {"type": "content", "text": "DEPARTMENT OF MOTOR VEHICLES"}, {"type": "content", "text": "ISHTAR"}, {"type": "content", "text": "CONCEPT OF TIME"}, {"type": "content", "text": "LOVE"}, {"type": "content", "text": "GEESE"}, {"type": "content", "text": "ANTIKYTHERA MECHANISM"}, {"type": "content", "text": "SUNSCREEN"}, {"type": "content", "text": "TAILORING"}, {"type": "content", "text": "EXTINCTION"}, {"type": "content", "text": "JANSPORT"}, {"type": "content", "text": "SPECULATIVE FICTION"}, {"type": "content", "text": "CRIME STATISTICS"}, {"type": "content", "text": "DREAM"}, {"type": "content", "text": "REAM"}];
+const TOTAL = PAGES.length;
+let current = 0; // zero-indexed
+const stage = document.getElementById('stage');
+const pageInput = document.getElementById('pageInput');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function renderPageEl(idx){
+  const p = PAGES[idx];
+  const el = document.createElement('div');
+  el.className = 'page ' + p.type;
+  if(p.type === 'cover'){
+    const top = document.createElement('div');
+    top.className = 'cover-top';
+    (p.lines.slice(0, p.lines.length > 1 ? 2 : 1)).forEach(line => {
+      const d = document.createElement('div');
+      d.textContent = line;
+      top.appendChild(d);
+    });
+    el.appendChild(top);
+    if(p.lines.length > 2){
+      const bottom = document.createElement('div');
+      bottom.className = 'cover-bottom';
+      bottom.textContent = p.lines[p.lines.length - 1];
+      el.appendChild(bottom);
+    } else {
+      const spacer = document.createElement('div');
+      el.appendChild(spacer);
+    }
+  } else if(p.type === 'content'){
+    const t = document.createElement('div');
+    t.className = 'text';
+    t.textContent = p.text;
+    const len = p.text.length;
+    let size = 30;
+    if(len > 60) size = 15;
+    else if(len > 40) size = 19;
+    else if(len > 25) size = 23;
+    t.style.fontSize = 'clamp(12px, ' + size + 'px, ' + size + 'px)';
+    el.appendChild(t);
+  } else {
+    const g = document.createElement('div');
+    g.className = 'ghost-num';
+    g.textContent = String(idx + 1).padStart(3, '0');
+    el.appendChild(g);
+  }
+  return el;
+}
+
+let liveEl = renderPageEl(0);
+stage.appendChild(liveEl);
+stage.appendChild(document.getElementById('zoneLeft'));
+stage.appendChild(document.getElementById('zoneRight'));
+
+function go(idx, animate=true){
+  idx = Math.max(0, Math.min(TOTAL - 1, idx));
+  if(idx === current && animate) return;
+  current = idx;
+  pageInput.value = current + 1;
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === TOTAL - 1;
+
+  const newEl = renderPageEl(current);
+  if(animate){
+    newEl.classList.add('entering');
+    stage.insertBefore(newEl, stage.firstChild);
+    liveEl.classList.add('leaving');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        newEl.classList.remove('entering');
+      });
+    });
+    const old = liveEl;
+    setTimeout(() => { old.remove(); }, 230);
+  } else {
+    stage.insertBefore(newEl, stage.firstChild);
+    liveEl.remove();
+  }
+  liveEl = newEl;
+}
+
+prevBtn.addEventListener('click', () => go(current - 1));
+nextBtn.addEventListener('click', () => go(current + 1));
+document.getElementById('zoneLeft').addEventListener('click', () => go(current - 1));
+document.getElementById('zoneRight').addEventListener('click', () => go(current + 1));
+
+pageInput.addEventListener('change', () => {
+  const v = parseInt(pageInput.value, 10);
+  if(!isNaN(v)) go(v - 1);
+});
+
+document.addEventListener('keydown', (e) => {
+  if(document.activeElement === pageInput) return;
+  if(e.key === 'ArrowRight' || e.key === ' ') { go(current + 1); }
+  if(e.key === 'ArrowLeft') { go(current - 1); }
+});
+
+let touchStartX = null;
+stage.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, {passive:true});
+stage.addEventListener('touchend', (e) => {
+  if(touchStartX === null) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if(Math.abs(dx) > 40){
+    if(dx < 0) go(current + 1); else go(current - 1);
+  }
+  touchStartX = null;
+}, {passive:true});
+
+prevBtn.disabled = true;
+</script>
+</body>
+</html>
