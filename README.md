@@ -1,6 +1,4 @@
-# 500 Poems
-
-A single self-contained web viewer for *500 Poems for Lizabetta Frankline* by Thom Eichelberger-Young (501 pages).
+# 500 Poems 
 
 ## What's here
 - `index.html` — the entire viewer (HTML/CSS/JS + all page text embedded). No build step, no dependencies.
