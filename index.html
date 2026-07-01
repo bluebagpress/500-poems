@@ -59,7 +59,7 @@
     text-align:center;
   }
   .cover .cover-top .book{ font-style:italic; }
-  .cover .cover-top .cover-date{ text-align:left; }
+  .cover .cover-top .cover-date{ text-align:center; }
   .cover .cover-bottom{
     font-family:"Courier New", Courier, monospace;
     font-weight:700;
@@ -158,12 +158,23 @@ function renderPageEl(idx){
   if(p.type === 'cover'){
     const top = document.createElement('div');
     top.className = 'cover-top';
-    (p.lines.slice(0, p.lines.length > 1 ? 2 : 1)).forEach((line, i) => {
-      const d = document.createElement('div');
-      if(i === 1) d.className = 'cover-date';
-      d.textContent = line;
-      top.appendChild(d);
-    });
+
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'cover-title';
+    titleDiv.textContent = p.lines[0];
+    top.appendChild(titleDiv);
+
+    if(p.lines.length > 1){
+      const spacer = document.createElement('div');
+      spacer.className = 'cover-spacer';
+      spacer.innerHTML = '&nbsp;';
+      top.appendChild(spacer);
+
+      const dateDiv = document.createElement('div');
+      dateDiv.className = 'cover-date';
+      dateDiv.textContent = p.lines[1];
+      top.appendChild(dateDiv);
+    }
     el.appendChild(top);
     if(p.lines.length > 2){
       const bottom = document.createElement('div');
@@ -203,9 +214,8 @@ function fitOneLine(el, maxSize, minSize, limitEl){
 
 function fitPageText(el){
   if(el.classList.contains('cover')){
-    const lines = el.querySelectorAll('.cover-top > div');
-    const titleLine = lines[0];
-    const dateLine = lines[1];
+    const titleLine = el.querySelector('.cover-title');
+    const dateLine = el.querySelector('.cover-date');
     const bottom = el.querySelector('.cover-bottom');
 
     if(titleLine) fitOneLine(titleLine, 17, 7, titleLine);
