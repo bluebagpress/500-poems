@@ -56,14 +56,17 @@
     font-weight:700;
     font-size: clamp(11px, 1.8vw, 17px);
     line-height:1.55;
+    text-align:center;
   }
   .cover .cover-top .book{ font-style:italic; }
+  .cover .cover-top .cover-date{ text-align:left; }
   .cover .cover-bottom{
     font-family:"Courier New", Courier, monospace;
     font-weight:700;
     font-size: clamp(6px, 1.05vw, 11px);
     white-space: nowrap;
     width: 100%;
+    text-align:center;
     color:#222;
   }
 
@@ -155,8 +158,9 @@ function renderPageEl(idx){
   if(p.type === 'cover'){
     const top = document.createElement('div');
     top.className = 'cover-top';
-    (p.lines.slice(0, p.lines.length > 1 ? 2 : 1)).forEach(line => {
+    (p.lines.slice(0, p.lines.length > 1 ? 2 : 1)).forEach((line, i) => {
       const d = document.createElement('div');
+      if(i === 1) d.className = 'cover-date';
       d.textContent = line;
       top.appendChild(d);
     });
@@ -199,9 +203,19 @@ function fitOneLine(el, maxSize, minSize, limitEl){
 
 function fitPageText(el){
   if(el.classList.contains('cover')){
-    el.querySelectorAll('.cover-top > div').forEach(d => fitOneLine(d, 17, 7, d));
+    const lines = el.querySelectorAll('.cover-top > div');
+    const titleLine = lines[0];
+    const dateLine = lines[1];
     const bottom = el.querySelector('.cover-bottom');
+
+    if(titleLine) fitOneLine(titleLine, 17, 7, titleLine);
     if(bottom) fitOneLine(bottom, 11, 6, bottom);
+
+    // Date line should match the dedication's font size exactly.
+    if(dateLine){
+      const matchSize = bottom ? parseFloat(bottom.style.fontSize) : 11;
+      fitOneLine(dateLine, matchSize, 6, dateLine);
+    }
   } else if(el.classList.contains('content')){
     const t = el.querySelector('.text');
     if(t) fitOneLine(t, 22, 6, t.parentElement);
